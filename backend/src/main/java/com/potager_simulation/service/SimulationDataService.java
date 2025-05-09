@@ -7,9 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class SimulationDataService {
@@ -56,7 +54,7 @@ public class SimulationDataService {
 
     /**
      * Nettoie toutes les entités (plantes, insectes, dispositifs) mais conserve les parcelles.
-     * Conserve le taux d'humidité actuel de chaque parcelle.
+     * Réinitialise les taux d'humidité à des valeurs spécifiques.
      */
     @Transactional
     public void reinitialiserPotager() {
@@ -74,19 +72,72 @@ public class SimulationDataService {
             System.out.println("Les programmes ont déjà été supprimés: " + e.getMessage());
         }
 
-        // Mettre à jour les parcelles (seulement pour retirer les références aux dispositifs)
+        // Supprimer les dispositifs
+        dispositifRepository.deleteAll();
+
+        // Récupérer toutes les parcelles
         List<Parcelle> parcelles = parcelleRepository.findAll();
+
+        // Map pour stocker les valeurs d'humidité spécifiques
+        Map<String, Double> humiditeParPosition = new HashMap<>();
+
+        // Définir les valeurs d'humidité spécifiques selon les coordonnées
+        // Row 0
+        humiditeParPosition.put("0-0", 35.0);
+        humiditeParPosition.put("1-0", 40.0);
+        humiditeParPosition.put("2-0", 45.0);
+        humiditeParPosition.put("3-0", 10.0);
+        humiditeParPosition.put("4-0", 55.0);
+        // Row 1
+        humiditeParPosition.put("0-1", 38.0);
+        humiditeParPosition.put("1-1", 43.0);
+        humiditeParPosition.put("2-1", 23.0);
+        humiditeParPosition.put("3-1", 53.0);
+        humiditeParPosition.put("4-1", 58.0);
+        // Row 2
+        humiditeParPosition.put("0-2", 41.0);
+        humiditeParPosition.put("1-2", 46.0);
+        humiditeParPosition.put("2-2", 51.0); // Centre
+        humiditeParPosition.put("3-2", 56.0);
+        humiditeParPosition.put("4-2", 61.0);
+        // Row 3
+        humiditeParPosition.put("0-3", 44.0);
+        humiditeParPosition.put("1-3", 29.0);
+        humiditeParPosition.put("2-3", 54.0);
+        humiditeParPosition.put("3-3", 59.0);
+        humiditeParPosition.put("4-3", 64.0);
+        // Row 4
+        humiditeParPosition.put("0-4", 47.0);
+        humiditeParPosition.put("1-4", 52.0);
+        humiditeParPosition.put("2-4", 19.0);
+        humiditeParPosition.put("3-4", 62.0);
+        humiditeParPosition.put("4-4", 67.0);
+
+        // Mettre à jour les parcelles avec les valeurs d'humidité spécifiques
         for (Parcelle parcelle : parcelles) {
-            // Conserver le taux d'humidité actuel
-            // Ne modifier que la référence au dispositif
+            // Clé pour rechercher dans la map
+            String key = parcelle.getX() + "-" + parcelle.getY();
+
+            // Vérifier si une valeur spécifique existe pour cette position
+            if (humiditeParPosition.containsKey(key)) {
+                double humidite = humiditeParPosition.get(key);
+                parcelle.setTauxHumidite(humidite);
+                System.out.println("Parcelle (" + parcelle.getX() + "," + parcelle.getY() +
+                        ") humidité réinitialisée à " + humidite);
+            } else {
+                // Valeur par défaut si non spécifiée (ne devrait pas arriver avec une grille 5x5)
+                parcelle.setTauxHumidite(50.0);
+                System.out.println("Parcelle (" + parcelle.getX() + "," + parcelle.getY() +
+                        ") humidité réinitialisée à la valeur par défaut (50.0)");
+            }
+
+            // Enlever la référence au dispositif de traitement
             parcelle.setDispositifTraitement(null);
         }
 
-        // Supprimer les dispositifs après avoir supprimé les références dans les parcelles
-        dispositifRepository.deleteAll();
-
         // Sauvegarder les parcelles mises à jour
         parcelleRepository.saveAll(parcelles);
+        System.out.println("Réinitialisation du potager terminée avec des valeurs d'humidité personnalisées");
     }
 
     /**
