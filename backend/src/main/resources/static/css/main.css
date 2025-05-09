@@ -1,0 +1,195 @@
+/* Main Styles for Potager Simulation */
+
+:root {
+    --color-soil: #8b5a2b;
+    --color-plant: #228b22;
+    --color-insect: #ff4500;
+    --color-water: #1e90ff;
+    --color-insecticide: #ff69b4;
+    --color-fertilizer: #32cd32;
+    --color-device: #9932cc;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Statistics Panel */
+.stat-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.stat-item i {
+    width: 24px;
+    margin-right: 8px;
+}
+
+/* Utility classes */
+.text-overflow-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Simulation Controls */
+.simulation-controls-container {
+    background-color: #ffffff;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+/* Progress Bars */
+.progress {
+    height: 10px;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    transition: width 0.5s ease-in-out;
+}
+
+/* Detail Panel */
+.detail-panel-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.detail-panel-item .icon {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-right: 10px;
+    color: white;
+}
+
+.detail-panel-item .plant-icon {
+    background-color: var(--color-plant);
+}
+
+.detail-panel-item .insect-icon {
+    background-color: var(--color-insect);
+}
+
+.detail-panel-item .water-icon {
+    background-color: var(--color-water);
+}
+
+.detail-panel-item .device-icon {
+    background-color: var(--color-device);
+}
+
+/* Modals */
+.modal-header {
+    border-radius: 0;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+/* Range inputs */
+.form-range::-webkit-slider-thumb {
+    background: #0d6efd;
+}
+
+.form-range::-moz-range-thumb {
+    background: #0d6efd;
+}
+
+.form-range::-ms-thumb {
+    background: #0d6efd;
+}
+
+/* Garden Legend */
+.garden-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.8rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.legend-color {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.legend-icon {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+
+.plant-icon {
+    background-color: var(--color-plant);
+}
+
+.insect-icon {
+    background-color: var(--color-insect);
+}
+
+.device-icon {
+    background-color: var(--color-device);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.pulse {
+    animation: pulse 1s infinite;
+}
+
+/* Loading Spinner */
+.garden-loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+}
+
+.garden-loading p {
+    margin-top: 10px;
+    color: #6c757d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .garden-controls {
+        flex-direction: column;
+    }
+
+    .garden-legend {
+        margin-top: 10px;
+    }
+}

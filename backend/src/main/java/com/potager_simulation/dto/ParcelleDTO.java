@@ -13,7 +13,11 @@ public class ParcelleDTO {
     private Long id;
     private int x;
     private int y;
+    // Pour la compatibilité avec le frontend qui utilise ces propriétés
+    private int coordX;
+    private int coordY;
     private double tauxHumidite;
+    private String categorieHumidite;
     private List<PlanteDTO> plantes = new ArrayList<>();
     private List<InsecteDTO> insectes = new ArrayList<>();
     private DispositifTraitementDTO dispositifTraitement;
@@ -27,7 +31,20 @@ public class ParcelleDTO {
         this.id = id;
         this.x = x;
         this.y = y;
+        this.coordX = x; // Initialiser coordX avec x
+        this.coordY = y; // Initialiser coordY avec y
         this.tauxHumidite = tauxHumidite;
+    }
+
+    // Lorsqu'on modifie x ou y, mettre à jour coordX et coordY
+    public void setX(int x) {
+        this.x = x;
+        this.coordX = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+        this.coordY = y;
     }
 
     /**
@@ -59,6 +76,10 @@ public class ParcelleDTO {
      * @return une chaîne décrivant le niveau d'humidité (sec, modéré, humide)
      */
     public String getCategorieHumidite() {
+        if (this.categorieHumidite != null) {
+            return this.categorieHumidite;
+        }
+
         if (tauxHumidite < 30) {
             return "sec";
         } else if (tauxHumidite < 70) {

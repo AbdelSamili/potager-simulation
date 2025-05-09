@@ -42,8 +42,15 @@ public class SimulationController {
 
     @PostMapping("/reset")
     public ResponseEntity<String> resetSimulation() {
+        // 1. Arrêter la simulation en cours
         simulationManager.arreterSimulation();
-        dataService.initialiserPotagerDefaut();
+
+        // 2. Réinitialiser le compteur de pas dans SimulationManager
+        simulationManager.resetPasSimulation();
+
+        // 3. Nettoyer toutes les entités sans en recréer de nouvelles
+        dataService.reinitialiserPotager();
+
         return ResponseEntity.ok("Simulation réinitialisée");
     }
 

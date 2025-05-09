@@ -19,6 +19,11 @@ public class DispositifTraitementController {
         this.dispositifService = dispositifService;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<DispositifTraitementDTO> getDispositifById(@PathVariable Long id) {
+        return ResponseEntity.ok(dispositifService.getDispositifById(id));
+    }
+
     @GetMapping
     public ResponseEntity<List<DispositifTraitementDTO>> getAllDispositifs() {
         return ResponseEntity.ok(dispositifService.getAllDispositifs());

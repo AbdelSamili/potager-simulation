@@ -20,5 +20,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("http://localhost:3000") // L'URL de votre frontend React
                 .withSockJS();
+
+        // Ajout d'un second endpoint sans SockJS pour les clients qui ne supportent pas SockJS
+        registry.addEndpoint("/ws")
+                .setAllowedOrigins("http://localhost:3000");
     }
 }

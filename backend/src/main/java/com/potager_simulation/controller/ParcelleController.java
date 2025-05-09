@@ -24,6 +24,12 @@ public class ParcelleController {
         return ResponseEntity.ok(parcelleService.getAllParcelles());
     }
 
+    // Dans ParcelleController.java
+    @GetMapping("/{id}/voisines")
+    public ResponseEntity<List<ParcelleDTO>> getParcellesVoisines(@PathVariable Long id) {
+        return ResponseEntity.ok(parcelleService.getParcellesVoisines(id));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ParcelleDTO> getParcelleById(@PathVariable Long id) {
         return ResponseEntity.ok(parcelleService.getParcelleById(id));

@@ -23,6 +23,14 @@ public class Programme {
 
     // Méthodes métier
     public boolean estActif(int instantCourant) {
-        return instantCourant >= instantDebut && instantCourant < (instantDebut + duree);
+        boolean active = instantCourant >= instantDebut && instantCourant < (instantDebut + duree);
+
+        // Debug output
+        if (active) {
+            System.out.println("Program " + id + " is active: starts at " + instantDebut +
+                    ", duration " + duree + ", current time " + instantCourant);
+        }
+
+        return active;
     }
 }

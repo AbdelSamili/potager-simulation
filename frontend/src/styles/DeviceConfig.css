@@ -1,0 +1,242 @@
+/* src/styles/DeviceConfig.css */
+.device-config {
+    display: flex;
+    flex-direction: column;
+}
+
+.no-device {
+    text-align: center;
+    padding: 1.5rem;
+    color: #95a5a6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    background-color: rgba(236, 240, 241, 0.5);
+    border-radius: 6px;
+}
+
+.device-details {
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.device-header {
+    padding: 0.75rem;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+    border-radius: 6px 6px 0 0;
+}
+
+.device-header h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.device-info {
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+.device-feature {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.75rem;
+}
+
+.device-feature:last-child {
+    margin-bottom: 0;
+}
+
+.feature-label {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    margin-bottom: 0.25rem;
+}
+
+.feature-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.treatment-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.treatment-type {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 500;
+}
+
+.treatment-type.eau {
+    background-color: #3498db;
+    color: white;
+}
+
+.treatment-type.engrais {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.treatment-type.insecticide {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.programs-section {
+    padding: 0.75rem;
+}
+
+.programs-section h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+}
+
+.no-programs {
+    text-align: center;
+    color: #95a5a6;
+    font-style: italic;
+    padding: 1rem;
+    background-color: rgba(236, 240, 241, 0.5);
+    border-radius: 4px;
+}
+
+.programs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.program-item {
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    padding: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.program-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.program-info {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+
+.program-feature {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-device-form, .add-program-form {
+    background-color: white;
+    border-radius: 6px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-top: 1rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.add-device-form h4, .add-program-form h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    color: var(--dark-color);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.range-display {
+    display: flex;
+    align-items: center;
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.range-value {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-right: 0.25rem;
+}
+
+.range-label {
+    color: #7f8c8d;
+}
+
+.time-display {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-item input {
+    width: auto;
+}
+
+/* Custom scrollbar */
+.programs-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.programs-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.programs-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.programs-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .program-info {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .checkbox-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

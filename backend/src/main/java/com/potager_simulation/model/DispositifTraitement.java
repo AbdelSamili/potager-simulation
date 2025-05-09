@@ -13,19 +13,22 @@ public class DispositifTraitement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private int rayon = 2; // Rayon d'action par défaut
-
     @OneToMany(mappedBy = "dispositifTraitement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Programme> programmes = new ArrayList<>();
-
     @OneToOne(mappedBy = "dispositifTraitement")
     private Parcelle parcelle;
 
-    // Méthodes métier
     public List<Programme> getProgrammesActifs(int instantCourant) {
-        return programmes.stream()
+        // Add debug output
+        System.out.println("Checking programs at time: " + instantCourant);
+        System.out.println("Total programs: " + programmes.size());
+
+        List<Programme> actifs = programmes.stream()
                 .filter(p -> p.estActif(instantCourant))
                 .collect(Collectors.toList());
+
+        System.out.println("Active programs found: " + actifs.size());
+        return actifs;
     }
 }

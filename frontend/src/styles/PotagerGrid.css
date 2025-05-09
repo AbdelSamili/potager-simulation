@@ -1,0 +1,219 @@
+/* src/styles/PotagerGrid.css */
+.potager-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 400px;
+}
+
+.potager-info {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    justify-content: space-between;
+}
+
+.potager-stats {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.potager-stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.potager-grid {
+    display: grid;
+    grid-gap: 8px;
+    padding: 16px;
+    background-color: #f0f4f8;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1rem;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+.empty-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    width: 100%;
+    background-color: #f0f4f8;
+    border-radius: var(--border-radius);
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+.parcelle-details-panel {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    max-width: 100%;
+    margin-top: 1rem;
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.panel-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    line-height: 1;
+}
+
+.close-button:hover {
+    background: none;
+    opacity: 0.8;
+}
+
+.panel-content {
+    padding: 1rem;
+}
+
+.parcelle-info {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.panel-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.panel-tab {
+    flex: 1;
+    background-color: #eee;
+    color: var(--dark-color);
+    padding: 0.75rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.panel-tab:hover {
+    background-color: #ddd;
+}
+
+.panel-tab.active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(46, 204, 113, 0.3);
+}
+
+.panel-details {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 4px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Custom scrollbar */
+.panel-details::-webkit-scrollbar {
+    width: 8px;
+}
+
+.panel-details::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.panel-details::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.panel-details::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .panel-tabs {
+        flex-direction: column;
+    }
+
+    .potager-info {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .potager-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Animation for new elements */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.potager-grid .parcelle-item {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Empty cell styling */
+.parcelle-item.empty {
+    background-color: rgba(236, 240, 241, 0.5);
+    border: 1px dashed #ccc;
+}
+
+/* Highlight effect on hover for interactive elements */
+.potager-container button:hover:not(.close-button):not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Additional styles for better usability */
+.potager-container {
+    min-height: 500px; /* Ensure enough space for the grid */
+}
+
+.potager-grid {
+    min-height: 300px; /* Ensure grid has minimum height */
+}

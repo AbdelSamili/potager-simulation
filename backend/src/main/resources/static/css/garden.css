@@ -1,0 +1,321 @@
+/* Styles for the Garden Grid */
+
+.garden-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.garden-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.garden-grid-container {
+    position: relative;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 5px;
+}
+
+.garden-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    background-color: #e9ecef;
+    padding: 2px;
+    min-height: 500px;
+}
+
+.garden-cell {
+    position: relative;
+    aspect-ratio: 1/1;
+    background-color: var(--color-soil);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.garden-cell:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.garden-cell.selected {
+    border: 2px solid #ffc107;
+    transform: scale(1.05);
+    z-index: 2;
+}
+
+/* Cell humidity visualization */
+.garden-cell[data-humidity="low"] {
+    background-color: #e6f7ff;
+}
+
+.garden-cell[data-humidity="medium"] {
+    background-color: #99d6ff;
+}
+
+.garden-cell[data-humidity="high"] {
+    background-color: #0099ff;
+}
+
+/* Cell content */
+.cell-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.cell-coordinates {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 2px;
+    padding: 1px 3px;
+}
+
+.cell-humidity {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 2px;
+    padding: 1px 3px;
+}
+
+/* Plants visualization */
+.plants-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    width: 100%;
+    height: 50%;
+}
+
+.plant-item {
+    width: 16px;
+    height: 16px;
+    background-color: var(--color-plant);
+    border-radius: 50% 50% 0 0;
+    position: relative;
+}
+
+.plant-item::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 6px;
+    background-color: #fff;
+}
+
+.plant-item.mature {
+    background-color: darkgreen;
+}
+
+.plant-item.drageon {
+    border: 1px dashed white;
+}
+
+/* Insects visualization */
+.insects-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    width: 100%;
+    height: 30%;
+}
+
+.insect-item {
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-insect);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: relative;
+}
+
+.insect-item::before, .insect-item::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    width: 6px;
+    height: 1px;
+    background-color: #000;
+}
+
+.insect-item::before {
+    left: 2px;
+    transform: rotate(-30deg);
+}
+
+.insect-item::after {
+    right: 2px;
+    transform: rotate(30deg);
+}
+
+.insect-item.male {
+    background-color: #ff6b6b;
+}
+
+.insect-item.female {
+    background-color: #ff9f9f;
+}
+
+.insect-item.healthy {
+    border: 1px solid white;
+}
+
+.insect-item.hungry {
+    opacity: 0.6;
+}
+
+/* Device visualization */
+.device-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-device);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.device-container::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+.device-radius {
+    position: absolute;
+    border: 2px dashed rgba(153, 50, 204, 0.5);
+    border-radius: 50%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* Treatment effects */
+.treatment-animation-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.treatment-effect {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: expand-fade 2s ease-out forwards;
+}
+
+.treatment-effect.water {
+    background-color: var(--color-water);
+}
+
+.treatment-effect.insecticide {
+    background-color: var(--color-insecticide);
+}
+
+.treatment-effect.fertilizer {
+    background-color: var(--color-fertilizer);
+}
+
+@keyframes expand-fade {
+    0% {
+        transform: scale(0);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* View modes */
+.garden-grid.humidity-view .plant-item,
+.garden-grid.humidity-view .insect-item,
+.garden-grid.humidity-view .device-container {
+    opacity: 0.4;
+}
+
+.garden-grid.plants-view .insect-item,
+.garden-grid.plants-view .device-container {
+    opacity: 0.3;
+}
+
+.garden-grid.plants-view .garden-cell {
+    background-color: #f8f9fa;
+}
+
+.garden-grid.plants-view .plant-item {
+    transform: scale(1.2);
+}
+
+.garden-grid.insects-view .plant-item,
+.garden-grid.insects-view .device-container {
+    opacity: 0.3;
+}
+
+.garden-grid.insects-view .garden-cell {
+    background-color: #f8f9fa;
+}
+
+.garden-grid.insects-view .insect-item {
+    transform: scale(1.2);
+}
+
+.garden-grid.devices-view .plant-item,
+.garden-grid.devices-view .insect-item {
+    opacity: 0.3;
+}
+
+.garden-grid.devices-view .garden-cell {
+    background-color: #f8f9fa;
+}
+
+.garden-grid.devices-view .device-container {
+    transform: translate(-50%, -50%) scale(1.2);
+}
+
+.garden-grid.devices-view .device-radius {
+    border-width: 3px;
+}

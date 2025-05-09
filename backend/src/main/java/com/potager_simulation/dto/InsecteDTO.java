@@ -19,6 +19,9 @@ public class InsecteDTO {
     private int parcelleCoordX;
     private int parcelleCoordY;
 
+    // Pour la compatibilité avec le frontend qui utilise ce champ
+    private Integer indiceBonneSante;
+
     // Constructeurs
     public InsecteDTO() {
         // Constructeur par défaut nécessaire pour la désérialisation JSON
@@ -33,6 +36,18 @@ public class InsecteDTO {
         this.mobilite = mobilite;
         this.resistanceInsecticide = resistanceInsecticide;
         this.passSansManger = passSansManger;
+    }
+
+    // Getter personnalisé pour adapter aux attentes du frontend
+    public int getIndiceBonneSante() {
+        return this.sante;
+    }
+
+    // Setter personnalisé pour adapter aux attentes du frontend
+    public void setIndiceBonneSante(Integer indiceBonneSante) {
+        if (indiceBonneSante != null) {
+            this.sante = indiceBonneSante;
+        }
     }
 
     /**

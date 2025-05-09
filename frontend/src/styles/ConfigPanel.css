@@ -1,0 +1,149 @@
+/* src/styles/ConfigPanel.css */
+.config-panel {
+    margin-top: 1rem;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.panel-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.expand-icon {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.expand-icon.up {
+    transform: rotate(180deg);
+}
+
+.panel-content {
+    padding: 0 1rem 1rem;
+    animation: slideDown 0.3s ease-out;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+    }
+}
+
+.config-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.config-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.config-section h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    color: var(--dark-color);
+}
+
+.species-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.species-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.species-item:hover {
+    transform: translateX(3px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.species-color {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.simulation-info {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+.simulation-rules {
+    padding-left: 1.5rem;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.simulation-rules li {
+    margin-bottom: 0.4rem;
+}
+
+.about-info {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+/* Custom scrollbar */
+.panel-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .species-list {
+        grid-template-columns: 1fr;
+    }
+}

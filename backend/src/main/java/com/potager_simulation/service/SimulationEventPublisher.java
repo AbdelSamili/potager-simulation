@@ -15,6 +15,9 @@ public class SimulationEventPublisher {
     }
 
     public void publierEtatPotager(EtatPotagerDTO etat) {
+        // Publier sur le topic attendu par le frontend
         messagingTemplate.convertAndSend("/topic/potager-updates", etat);
+        // Maintenir l'ancien topic pour compatibilité
+        messagingTemplate.convertAndSend("/topic/simulation", etat);
     }
 }

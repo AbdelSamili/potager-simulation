@@ -6,8 +6,8 @@ import java.util.List;
 @Data
 public class EtatPotagerDTO {
     private int pasSimulation;
+    private boolean enCours;
     private int largeur;
     private int hauteur;
     private List<ParcelleDTO> parcelles;
 }
-

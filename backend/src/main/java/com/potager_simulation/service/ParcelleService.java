@@ -164,4 +164,14 @@ public class ParcelleService {
 
         return dto;
     }
+    // Dans ParcelleService.java
+    public List<ParcelleDTO> getParcellesVoisines(Long id) {
+        Parcelle parcelle = parcelleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Parcelle non trouvée avec l'ID: " + id));
+
+        List<Parcelle> voisines = parcelleRepository.findParcellesAdjacentes(parcelle.getX(), parcelle.getY());
+        return voisines.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }

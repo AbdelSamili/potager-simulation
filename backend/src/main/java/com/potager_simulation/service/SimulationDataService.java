@@ -17,17 +17,20 @@ public class SimulationDataService {
     private final PlanteRepository planteRepository;
     private final InsecteRepository insecteRepository;
     private final DispositifTraitementRepository dispositifRepository;
+    private final ProgrammeRepository programmeRepository;
 
     @Autowired
     public SimulationDataService(
             ParcelleRepository parcelleRepository,
             PlanteRepository planteRepository,
             InsecteRepository insecteRepository,
-            DispositifTraitementRepository dispositifRepository) {
+            DispositifTraitementRepository dispositifRepository,
+            ProgrammeRepository programmeRepository) {
         this.parcelleRepository = parcelleRepository;
         this.planteRepository = planteRepository;
         this.insecteRepository = insecteRepository;
         this.dispositifRepository = dispositifRepository;
+        this.programmeRepository = programmeRepository;
     }
 
     /**
@@ -49,6 +52,41 @@ public class SimulationDataService {
 
         // Ajouter des dispositifs de traitement
         ajouterDispositifsPronfigures(parcelles);
+    }
+
+    /**
+     * Nettoie toutes les entités (plantes, insectes, dispositifs) mais conserve les parcelles.
+     * Conserve le taux d'humidité actuel de chaque parcelle.
+     */
+    @Transactional
+    public void reinitialiserPotager() {
+        // Supprimer tous les insectes
+        insecteRepository.deleteAll();
+
+        // Supprimer toutes les plantes
+        planteRepository.deleteAll();
+
+        // Supprimer tous les programmes et dispositifs
+        try {
+            programmeRepository.deleteAll();
+        } catch (Exception e) {
+            // Dans certains cas, les programmes sont supprimés par cascade
+            System.out.println("Les programmes ont déjà été supprimés: " + e.getMessage());
+        }
+
+        // Mettre à jour les parcelles (seulement pour retirer les références aux dispositifs)
+        List<Parcelle> parcelles = parcelleRepository.findAll();
+        for (Parcelle parcelle : parcelles) {
+            // Conserver le taux d'humidité actuel
+            // Ne modifier que la référence au dispositif
+            parcelle.setDispositifTraitement(null);
+        }
+
+        // Supprimer les dispositifs après avoir supprimé les références dans les parcelles
+        dispositifRepository.deleteAll();
+
+        // Sauvegarder les parcelles mises à jour
+        parcelleRepository.saveAll(parcelles);
     }
 
     /**

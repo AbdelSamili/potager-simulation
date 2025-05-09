@@ -1,7 +1,6 @@
 package com.potager_simulation.service;
 
-import com.potager_simulation.dto.EtatPotagerDTO;
-import com.potager_simulation.dto.ParcelleDTO;
+import com.potager_simulation.dto.*;
 import com.potager_simulation.model.*;
 import com.potager_simulation.model.enums.TypeTraitement;
 import com.potager_simulation.repository.*;
@@ -40,6 +39,15 @@ public class SimulationManager {
         this.insecteRepository = insecteRepository;
         this.eventPublisher = eventPublisher;
         this.taskScheduler = taskScheduler;
+    }
+
+    /**
+     * Réinitialise le compteur de pas de simulation à 0
+     * et s'assure que la simulation est arrêtée
+     */
+    public void resetPasSimulation() {
+        pasSimulationActuel = 0;
+        simulationEnCours = false;
     }
 
     public void demarrerSimulation(int delaiEntrePassMs) {
@@ -88,16 +96,25 @@ public class SimulationManager {
 
     private void appliquerTraitements() {
         List<Parcelle> parcelles = parcelleRepository.findAll();
+        System.out.println("Starting treatment application at time: " + pasSimulationActuel);
+        int deviceCount = 0;
+        int programsCount = 0;
 
         for (Parcelle parcelle : parcelles) {
             if (parcelle.getDispositifTraitement() == null) {
                 continue;
             }
+            deviceCount++;
 
             DispositifTraitement dispositif = parcelle.getDispositifTraitement();
             List<Programme> programmesActifs = dispositif.getProgrammesActifs(pasSimulationActuel);
+            programsCount += programmesActifs.size();
 
             for (Programme programme : programmesActifs) {
+                System.out.println("Applying treatment: " + programme.getTypeTraitement() +
+                        " at parcelle (" + parcelle.getX() + "," + parcelle.getY() +
+                        ") with radius " + dispositif.getRayon());
+
                 appliquerTraitementDansRayon(
                         parcelle,
                         dispositif.getRayon(),
@@ -105,6 +122,8 @@ public class SimulationManager {
                 );
             }
         }
+
+        System.out.println("Found " + deviceCount + " devices and " + programsCount + " active programs");
     }
 
     private void appliquerTraitementDansRayon(
@@ -117,7 +136,11 @@ public class SimulationManager {
         for (Parcelle parcelle : parcellesDansRayon) {
             switch (typeTraitement) {
                 case EAU:
+                    double oldHumidity = parcelle.getTauxHumidite();
                     parcelle.ajouterHumidite(20.0);
+                    System.out.println("Water applied to parcelle (" + parcelle.getX() + "," +
+                            parcelle.getY() + "), humidity: " + oldHumidity +
+                            " -> " + parcelle.getTauxHumidite());
                     break;
                 case INSECTICIDE:
                     for (Insecte insecte : parcelle.getInsectes()) {
@@ -143,11 +166,11 @@ public class SimulationManager {
         List<Plante> nouvellesPlantes = new ArrayList<>();
 
         for (Plante plante : plantes) {
-            // Faire vieillir la plante
+            // Faire vieillir la plante - IMPORTANT: cette méthode incrémente l'âge selon les exigences du PDF
             plante.vieillir();
 
-            // Si la plante est drageonnante, tenter de coloniser les parcelles voisines
-            if (plante.tenterColonisation()) {
+            // Si la plante est drageonnante et mature, tenter de coloniser les parcelles voisines
+            if (plante.estMature() && plante.tenterColonisation()) {
                 List<Parcelle> parcellesVoisines = parcelleRepository.findParcellesAdjacentes(
                         plante.getParcelle().getX(),
                         plante.getParcelle().getY()
@@ -184,7 +207,7 @@ public class SimulationManager {
             boolean planteDisponible = !insecte.getParcelle().getPlantes().isEmpty();
             insecte.seNourrir(planteDisponible);
 
-            // Vérifier sa survie
+            // Vérifier sa survie - selon le PDF, un insecte meurt s'il ne mange pas pendant 5 pas
             if (!insecte.estVivant()) {
                 insectesASupprimer.add(insecte);
                 continue;
@@ -254,9 +277,9 @@ public class SimulationManager {
 
     private EtatPotagerDTO creerEtatPotagerDTO() {
         // Créer un DTO représentant l'état actuel du potager
-        // Code de conversion entités -> DTOs
         EtatPotagerDTO etatDTO = new EtatPotagerDTO();
         etatDTO.setPasSimulation(pasSimulationActuel);
+        etatDTO.setEnCours(simulationEnCours);
 
         // Récupérer toutes les parcelles
         List<Parcelle> parcelles = parcelleRepository.findAll();
@@ -282,10 +305,131 @@ public class SimulationManager {
     }
 
     private ParcelleDTO convertParcelleToDTO(Parcelle parcelle) {
-        // Code de conversion Parcelle -> ParcelleDTO
-        // ...
-        return new ParcelleDTO(); // À implémenter
+        ParcelleDTO dto = new ParcelleDTO();
+
+        // Copier les propriétés de base
+        dto.setId(parcelle.getId());
+        dto.setX(parcelle.getX());
+        dto.setY(parcelle.getY());
+        dto.setTauxHumidite(parcelle.getTauxHumidite());
+
+        // Pour la compatibilité avec le frontend
+        dto.setCoordX(parcelle.getX());
+        dto.setCoordY(parcelle.getY());
+
+        // Déterminer la catégorie d'humidité
+        if (parcelle.getTauxHumidite() < 20) {
+            dto.setCategorieHumidite("sec");
+        } else if (parcelle.getTauxHumidite() < 40) {
+            dto.setCategorieHumidite("légèrement humide");
+        } else if (parcelle.getTauxHumidite() < 60) {
+            dto.setCategorieHumidite("moyennement humide");
+        } else if (parcelle.getTauxHumidite() < 80) {
+            dto.setCategorieHumidite("humide");
+        } else {
+            dto.setCategorieHumidite("très humide");
+        }
+
+        // Convertir les plantes
+        if (parcelle.getPlantes() != null && !parcelle.getPlantes().isEmpty()) {
+            dto.setPlantes(parcelle.getPlantes().stream()
+                    .map(this::convertPlanteToDTO)
+                    .collect(Collectors.toList()));
+        } else {
+            dto.setPlantes(new ArrayList<>());
+        }
+
+        // Convertir les insectes
+        if (parcelle.getInsectes() != null && !parcelle.getInsectes().isEmpty()) {
+            dto.setInsectes(parcelle.getInsectes().stream()
+                    .map(this::convertInsecteToDTO)
+                    .collect(Collectors.toList()));
+        } else {
+            dto.setInsectes(new ArrayList<>());
+        }
+
+        // Convertir le dispositif de traitement
+        if (parcelle.getDispositifTraitement() != null) {
+            dto.setDispositifTraitement(convertDispositifToDTO(parcelle.getDispositifTraitement()));
+        }
+
+        return dto;
     }
 
-    // Autres méthodes helper pour les conversions entités -> DTOs
+    // Méthodes de conversion supplémentaires nécessaires
+    private PlanteDTO convertPlanteToDTO(Plante plante) {
+        PlanteDTO dto = new PlanteDTO();
+        dto.setId(plante.getId());
+        dto.setEspece(plante.getEspece());
+        dto.setAge(plante.getAge());
+        dto.setAgeMaturite(plante.getAgeMaturite());
+        dto.setEstMature(plante.estMature());
+        dto.setEstDrageonnante(plante.isEstDrageonnante());
+        dto.setProbabiliteColonisation(plante.getProbabiliteColonisation());
+
+        // Ajouter des informations de parcelle pour le frontend
+        if (plante.getParcelle() != null) {
+            dto.setParcelleId(plante.getParcelle().getId());
+            dto.setParcelleCoordX(plante.getParcelle().getX());
+            dto.setParcelleCoordY(plante.getParcelle().getY());
+        }
+
+        return dto;
+    }
+
+    private InsecteDTO convertInsecteToDTO(Insecte insecte) {
+        InsecteDTO dto = new InsecteDTO();
+        dto.setId(insecte.getId());
+        dto.setEspece(insecte.getEspece());
+        dto.setSexe(insecte.getSexe());
+        dto.setSante(insecte.getSante());
+        dto.setMobilite(insecte.getMobilite());
+        dto.setResistanceInsecticide(insecte.getResistanceInsecticide());
+        dto.setPassSansManger(insecte.getPassSansManger());
+
+        // Pour la compatibilité avec le frontend
+        if (insecte.getParcelle() != null) {
+            dto.setParcelleId(insecte.getParcelle().getId());
+            dto.setParcelleCoordX(insecte.getParcelle().getX());
+            dto.setParcelleCoordY(insecte.getParcelle().getY());
+        }
+
+        return dto;
+    }
+
+    private DispositifTraitementDTO convertDispositifToDTO(DispositifTraitement dispositif) {
+        DispositifTraitementDTO dto = new DispositifTraitementDTO();
+        dto.setId(dispositif.getId());
+        dto.setRayon(dispositif.getRayon());
+
+        if (dispositif.getParcelle() != null) {
+            dto.setParcelleId(dispositif.getParcelle().getId());
+            dto.setParcelleCoordX(dispositif.getParcelle().getX());
+            dto.setParcelleCoordY(dispositif.getParcelle().getY());
+        }
+
+        // Convertir les programmes
+        List<ProgrammeDTO> programmesDTO = dispositif.getProgrammes().stream()
+                .map(this::convertProgrammeToDTO)
+                .collect(Collectors.toList());
+
+        // Pour la compatibilité avec le frontend
+        dto.setProgrammesActifs(programmesDTO);
+
+        return dto;
+    }
+
+    private ProgrammeDTO convertProgrammeToDTO(Programme programme) {
+        ProgrammeDTO dto = new ProgrammeDTO();
+        dto.setId(programme.getId());
+        dto.setInstantDebut(programme.getInstantDebut());
+        dto.setDuree(programme.getDuree());
+        dto.setTypeTraitement(programme.getTypeTraitement().name());
+
+        if (programme.getDispositifTraitement() != null) {
+            dto.setDispositifId(programme.getDispositifTraitement().getId());
+        }
+
+        return dto;
+    }
 }
